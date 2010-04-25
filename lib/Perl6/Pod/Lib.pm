@@ -16,7 +16,7 @@ Perl6::Pod::Lib - set of extensions for Perl6::Pod
 
 =cut
 
-$Perl6::Pod::Lib::VERSION = '0.01';
+$Perl6::Pod::Lib::VERSION = '0.02';
 
 1;
 __END__

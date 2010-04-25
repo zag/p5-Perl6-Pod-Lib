@@ -7,6 +7,7 @@ use strict;
 use warnings;
 use lib 't/lib';
 use T::Include;
+use T::Image;
 Test::Class->runtests;
 
 

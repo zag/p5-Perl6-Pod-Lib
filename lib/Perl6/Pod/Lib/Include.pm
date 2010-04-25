@@ -6,33 +6,33 @@ package Perl6::Pod::Lib::Include;
 
 =head1 NAME
 
-Perl6::Pod::Block::include - to include pod in the specified place
+Perl6::Pod::Block::Include - to include pod in the specified place
 
 =head1 SYNOPSIS
 
-    =inlcude t/data/P_test1.pod(para :private :public)
-    =include file:t/data/P_test1.pod
-    =include http://example.com/api.pod(head1 :public)
+    =Inlcude t/data/P_test1.pod(para :private :public)
+    =Include file:t/data/P_test1.pod
+    =Include http://example.com/api.pod(head1 :public)
     
-    =begin include
+    =begin Include
     file:../intro.pod( :!develop )
     file:../api.pod(:public,para :notes)
     http://example.com/todo.pod
-    =end include
+    =end Include
 
 =head1 DESCRIPTION
 
-The B<=include> block is used for include other Pod documents or their parts.
+The B<=Include> block is used for include other Pod documents or their parts.
 For definition of the target file are used a URI:
 
-    =include
+    =Include
     file:../intro.pod
     http://example.com/todo.pod
 
 For inclusion of certain parts of the documents add the blockname and (or) attributes after the main link. For example:
 
-    =include file:../intro.pod(para :public,item1)
-    =include http://example.com/document.pod ( :todo )
+    =Include file:../intro.pod(para :public,item1)
+    =Include http://example.com/document.pod ( :todo )
 
 The content of included documents will be filtered through that rules. 
 

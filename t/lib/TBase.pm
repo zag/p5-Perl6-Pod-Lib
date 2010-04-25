@@ -5,7 +5,8 @@
 package TBase;
 #Setup uses
 use constant NAME_BLOCKS => {
-    include => 'Perl6::Pod::Lib::Include'
+    Include => 'Perl6::Pod::Lib::Include',
+    Image   => 'Perl6::Pod::Lib::Image'
 };
 
 use strict;
