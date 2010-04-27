@@ -17,7 +17,7 @@ Perl6::Pod::Block::Image - add image
 
 =head1 DESCRIPTION
 
-The B<=Include> block is used for include image link.
+The B<=Image> block is used for include image link.
 For definition of the target file are used a URI:
 
     =Image t/image.jpg
