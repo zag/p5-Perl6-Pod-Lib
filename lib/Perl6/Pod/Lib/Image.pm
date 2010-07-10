@@ -6,7 +6,7 @@ package Perl6::Pod::Lib::Image;
 
 =head1 NAME
 
-Perl6::Pod::Block::Image - add image
+Perl6::Pod::Lib::Image - add image
 
 =head1 SYNOPSIS
 
