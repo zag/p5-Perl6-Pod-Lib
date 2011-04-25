@@ -61,7 +61,7 @@ use strict;
 use Data::Dumper;
 use Test::More;
 use Perl6::Pod::Block;
-use  Perl6::Pod::Parser::FilterPattern;
+use Perl6::Pod::Parser::FilterPattern;
 use base 'Perl6::Pod::Block';
 use Perl6::Pod::Parser::Utils qw(parse_URI );
 use XML::ExtOn('create_pipe');
@@ -71,23 +71,26 @@ sub on_para {
     my @lines = split( /[\n]/m, $txt );
     foreach my $line (@lines) {
         my $attr = parse_URI($line);
+        my @expressions = ();
         if ( my $exp = $attr->{rules} ) {
 
-            my @expressions = ();
-            my @patterns    = ();
+            my @patterns = ();
             foreach my $ex ( split( /\s*,\s*/, $exp ) ) {
 
                 #head2 : !value
                 #make filter element
                 my ( $name, $opt ) = $ex =~ /\s*(\S+)\s*(.*)/;
                 my $no_name = 0;
+
                 # if  expression for attribut inly i.e.: (:private)
-                if ($name =~ m/^\s*:/) {
-                   $opt .=" $name";
-                   $name = "no_name";
-                   #set flag for only attr filters
-                   $no_name = 1;
+                if ( $name =~ m/^\s*:/ ) {
+                    $opt .= " $name";
+                    $name = "no_name";
+
+                    #set flag for only attr filters
+                    $no_name = 1;
                 }
+
                 #make element filter for
                 my $blk = $self->mk_block( $name, $opt );
                 if ($no_name) {
@@ -100,15 +103,24 @@ sub on_para {
                   new Perl6::Pod::Parser::FilterPattern:: patterns =>
                   \@patterns;
             }
-            my $p = create_pipe( @expressions, $parser );
-            my $path = $attr->{address};
-            $p->parse($path);
         }
+        my $p = create_pipe( @expressions, $parser );
+        my $path = $attr->{address};
+
+        #now translate relative addr
+        if (   $path !~ /^\//
+            and my $current = $parser->current_context->custom->{src} )
+        {
+            my ($file, @cpath ) = reverse split( /\//, $current );
+            my $cpath = join "/", reverse @cpath;
+            $path = $cpath."/".$path;
+        }
+
+        $p->parse($path);
 
     }
     return undef;
 }
-
 
 sub to_xhtml {
     my ( $self, $parser, @in ) = @_;

@@ -1,5 +1,7 @@
 Revision history for Perl extension Perl6::Pod::Lib.
 TODO:
+0.04 25.04.2011
+    + translate path in Include and Images blocks
 0.03 18.06.2010
     + bulk attach all modules
       =use Perl6::Pod::Lib

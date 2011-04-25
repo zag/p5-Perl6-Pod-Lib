@@ -1,0 +1,3 @@
+=begin pod
+=Image test1.png
+=end pod

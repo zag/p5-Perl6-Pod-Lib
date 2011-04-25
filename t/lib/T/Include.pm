@@ -85,5 +85,21 @@ q#<pod pod:type='block' xmlns:pod='http://perlcabal.org/syn/S26.html'><Include p
 
 }
 
+sub p06_deep_include : Test {
+    my $t = shift;
+    my $x = $t->parse_to_xhtml( <<T, );
+=begin pod
+=Include t/data/unc_sub.pod
+=end pod
+T
+    $t->is_deeply_xml(
+        $x,
+q#<xhtml xmlns='http://www.w3.org/1999/xhtml'><p>Deep include
+</p></xhtml>
+#
+      )
+
+}
+
 1;
 

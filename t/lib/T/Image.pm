@@ -10,6 +10,7 @@ use strict;
 use warnings;
 use Test::More;
 use Data::Dumper;
+use Perl6::Pod::Lib::Include;
 use base 'TBase';
 
 sub p01_test_Image : Test {
@@ -49,6 +50,23 @@ T
     #    diag $x; exit;
     $t->is_deeply_xml( $x,
 q#<chapter><mediaobject><imageobject><imagedata align='center' caption='test' format='PNG' valign='bottom' scalefit='1' fileref='t/data/P_test1.png' /></imageobject><caption>test</caption></mediaobject></chapter>#
+    );
+}
+
+sub p04_deep_include : Test(2) {
+    my $t = shift;
+    my $pod = <<T;
+=begin pod
+=Include t/data/inc_sub_imgage.pod
+=end pod
+T
+    my $x = $t->parse_to_xhtml( $pod );
+    $t->is_deeply_xml( $x,
+q#<xhtml xmlns='http://www.w3.org/1999/xhtml'><img alt='' src='t/data/subdir/test1.png' title='' /></xhtml>#,'include xhtml'
+    );
+    my $xd = $t->parse_to_docbook( $pod );
+    $t->is_deeply_xml( $xd,
+q#<chapter><mediaobject><imageobject><imagedata align='center' caption='' format='PNG' valign='bottom' scalefit='1' fileref='t/data/subdir/test1.png' /></imageobject><caption /></mediaobject></chapter>#,'include docbook'
     );
 }
 

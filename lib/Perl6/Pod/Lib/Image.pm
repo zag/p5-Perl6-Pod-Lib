@@ -67,7 +67,7 @@ sub to_xhtml {
     my $src =
         $lattr->{is_external}
       ? $lattr->{scheme} . "://" . $lattr->{address}
-      : $lattr->{address};
+      : $self->_transalated_path( $parser,$lattr->{address});
     my $img = $parser->mk_element('img');
     %{ $img->attrs_by_name } = (
         src   => $src,
@@ -77,13 +77,29 @@ sub to_xhtml {
     return $img;
 }
 
+sub _transalated_path {
+    my $self   = shift;
+    my $parser = shift;
+    my $path   = shift;
+
+    #now translate relative addr
+    if ( $path !~ /^\//
+        and my $current = $parser->current_context->custom->{src} )
+    {
+        my ( $file, @cpath ) = reverse split( /\//, $current );
+        my $cpath = join "/", reverse @cpath;
+        $path = $cpath . "/" . $path;
+    }
+    return $path;
+}
+
 sub to_docbook {
     my ( $self, $parser, $txt ) = @_;
     my $lattr      = $self->attrs_by_name;
     my $title      = $lattr->{name} || $self->get_attr->{title};
     my $image_data = $self->mk_element('imagedata');
     warn "Only images from local filesystem supported" if $lattr->{is_external};
-    my $src = $lattr->{address};
+    my $src = $self->_transalated_path($parser,$lattr->{address});
     my $ext = "JPG";
     if ( $src =~ /\.(\w+)$/ ) {
         $ext = uc($1);
