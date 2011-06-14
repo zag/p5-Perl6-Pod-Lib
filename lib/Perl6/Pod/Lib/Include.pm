@@ -95,7 +95,6 @@ sub on_para {
                 }
 
                 #make element filter for
-                warn "mk_blosk $name $opt";
                 my $is_exclude = $name =~ s/^!//;
                 my $blk = $self->mk_block( $name, $opt );
                 if ($no_name) {
