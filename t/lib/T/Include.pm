@@ -98,8 +98,23 @@ q#<xhtml xmlns='http://www.w3.org/1999/xhtml'><p>Deep include
 </p></xhtml>
 #
       )
-
 }
+
+sub p07_exclude : Test {
+    my $t = shift;
+    my $x = $t->parse_to_xhtml( <<T, );
+=begin pod
+=Include t/data/test2_exclude.pod (!Describe)
+=end pod
+T
+    $t->is_deeply_xml(
+        $x,
+q#<xhtml xmlns='http://www.w3.org/1999/xhtml'><h1>Test
+</h1></xhtml>
+#
+      )
+}
+
 
 1;
 

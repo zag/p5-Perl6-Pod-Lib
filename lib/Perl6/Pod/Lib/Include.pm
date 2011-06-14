@@ -13,6 +13,7 @@ Perl6::Pod::Block::Include - to include pod in the specified place
     =Inlcude t/data/P_test1.pod(para :private :public)
     =Include file:t/data/P_test1.pod
     =Include http://example.com/api.pod(head1 :public)
+    =Include http://example.com/api.pod ( !DESCRIPTION )
     
     =begin Include
     file:../intro.pod( :!develop )
