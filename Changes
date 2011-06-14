@@ -1,5 +1,8 @@
 Revision history for Perl extension Perl6::Pod::Lib.
 TODO:
+
+0.06 14.06.2011
+    + filter for exclude
 0.05 14.06.2011
     + exclude for =Include test.pod (!BLOCKNAME)
 0.04 25.04.2011

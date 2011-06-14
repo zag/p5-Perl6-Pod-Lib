@@ -40,7 +40,7 @@ Insert image
 
 =cut
 
-$Perl6::Pod::Lib::VERSION = '0.05';
+$Perl6::Pod::Lib::VERSION = '0.06';
 our $PERL6POD = <<POD;
 =begin pod
 =use Perl6::Pod::Lib::Image

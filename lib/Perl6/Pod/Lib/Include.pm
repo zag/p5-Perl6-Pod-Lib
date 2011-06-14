@@ -63,6 +63,7 @@ use Data::Dumper;
 use Test::More;
 use Perl6::Pod::Block;
 use Perl6::Pod::Parser::FilterPattern;
+use Perl6::Pod::Lib::FilterExcludePattern;
 use base 'Perl6::Pod::Block';
 use Perl6::Pod::Parser::Utils qw(parse_URI );
 use XML::ExtOn('create_pipe');
@@ -76,6 +77,7 @@ sub on_para {
         if ( my $exp = $attr->{rules} ) {
 
             my @patterns = ();
+            my @exclude_patterns =  ();
             foreach my $ex ( split( /\s*,\s*/, $exp ) ) {
 
                 #head2 : !value
@@ -93,19 +95,30 @@ sub on_para {
                 }
 
                 #make element filter for
+                warn "mk_blosk $name $opt";
+                my $is_exclude = $name =~ s/^!//;
                 my $blk = $self->mk_block( $name, $opt );
                 if ($no_name) {
                     $blk->attrs_by_name->{no_name} = 1;
                 }
-                push @patterns, $blk;
+                $is_exclude ? push (@exclude_patterns, $blk) : push (@patterns, $blk)  ;
+            }
+            if (@exclude_patterns) {
+                push @expressions,
+                  new Perl6::Pod::Lib::FilterExcludePattern:: 
+                  patterns =>
+                  \@exclude_patterns;
             }
             if (@patterns) {
                 push @expressions,
-                  new Perl6::Pod::Parser::FilterPattern:: patterns =>
+                  new Perl6::Pod::Parser::FilterPattern:: 
+                  patterns =>
                   \@patterns;
             }
+
         }
-        my $p = create_pipe( @expressions, $parser );
+        my $p1 = new Perl6::Pod::Parser:: {MAIN_PARSER=>$parser,__DEFAULT_CONTEXT=>$parser->current_context};
+        my $p = create_pipe($p1, @expressions, $parser );
         my $path = $attr->{address};
 
         #now translate relative addr
