@@ -154,7 +154,10 @@ __END__
 
 =head1 SEE ALSO
 
-L<http://perlcabal.org/syn/S26.html>
+L<http://perlcabal.org/syn/S26.html>,
+
+Samples of B<=Include>: L<https://github.com/zag/webdao/blob/master/contrib/webdao-book.pod6>, L<https://raw.github.com/zag/ru-perl6-book/master/perl6-book.pod>
+
 
 =head1 AUTHOR
 

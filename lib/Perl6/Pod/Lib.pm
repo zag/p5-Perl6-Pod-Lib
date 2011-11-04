@@ -22,6 +22,8 @@ Perl6::Pod::Lib - set of extensions for Perl6::Pod
     =Include http://example.com/api.pod(head1 :public)
     =end pod
 
+    pod6xhtml -M Perl6::Pod::Lib somefile.pod  > somefile.xhtml
+
 =head1 DESCRIPTION
 
 The given library contains modules which expand possibilities of documents writen in Perldoc Pod (perl6's pod).
@@ -40,7 +42,7 @@ Insert image
 
 =cut
 
-$Perl6::Pod::Lib::VERSION = '0.06';
+$Perl6::Pod::Lib::VERSION = '0.07';
 our $PERL6POD = <<POD;
 =begin pod
 =use Perl6::Pod::Lib::Image
