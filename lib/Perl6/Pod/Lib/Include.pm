@@ -10,7 +10,7 @@ Perl6::Pod::Block::Include - to include pod in the specified place
 
 =head1 SYNOPSIS
 
-    =Inlcude t/data/P_test1.pod(para :private :public)
+    =Include t/data/P_test1.pod(para :private :public)
     =Include file:t/data/P_test1.pod
     =Include http://example.com/api.pod(head1 :public)
     =Include http://example.com/api.pod ( !DESCRIPTION )
@@ -23,35 +23,36 @@ Perl6::Pod::Block::Include - to include pod in the specified place
 
 =head1 DESCRIPTION
 
-The B<=Include> block is used for include other Pod documents or their parts.
-For definition of the target file are used a URI:
+The B<=Include> block is used to include other Pod documents or their parts.
+The target file is defined by a URI:
 
     =Include
     file:../intro.pod
     http://example.com/todo.pod
 
-For inclusion of certain parts of the documents add the blockname and (or) attributes after the main link. For example:
+To include certain parts of a document, add the blockname and/or attributes after the main link.
+For example:
 
     =Include file:../intro.pod(para :public,item1)
     =Include http://example.com/document.pod ( :todo )
 
-The content of included documents will be filtered through that rules. 
+The content of included documents will be filtered through those rules. 
 
-Eamples of the rules:
+Examples of the rules:
 
 =over
 
 =item (para :pubic)
 
-all paragraphs with attribute B<:public> is set on
+Only paragraphs with the attribute B<:public> are included
 
 =item (:todo :private)
 
-all blocks with attributes B<:todo> and B<:private>
+Only blocks with the attributes B<:todo> and B<:private> are included
 
 =item (head1, head2)
 
-all B<head1> and B<head2> blocks
+Only include B<head1> and B<head2> blocks
 
 =back
 
@@ -157,7 +158,7 @@ L<http://perlcabal.org/syn/S26.html>
 
 =head1 AUTHOR
 
-Zahatski Aliaksandr, <zag@cpan.org>
+Zahatski Aliaksandr <zag@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
