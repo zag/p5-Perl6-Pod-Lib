@@ -63,89 +63,50 @@ use strict;
 use Data::Dumper;
 use Test::More;
 use Perl6::Pod::Block;
-use Perl6::Pod::Parser::FilterPattern;
-use Perl6::Pod::Lib::FilterExcludePattern;
 use base 'Perl6::Pod::Block';
-use Perl6::Pod::Parser::Utils qw(parse_URI );
-use XML::ExtOn('create_pipe');
-
-sub on_para {
-    my ( $self, $parser, $txt ) = @_;
-    my @lines = split( /[\n]/m, $txt );
-    foreach my $line (@lines) {
-        my $attr = parse_URI($line);
-        my @expressions = ();
-        if ( my $exp = $attr->{rules} ) {
-
-            my @patterns = ();
-            my @exclude_patterns =  ();
-            foreach my $ex ( split( /\s*,\s*/, $exp ) ) {
-
-                #head2 : !value
-                #make filter element
-                my ( $name, $opt ) = $ex =~ /\s*(\S+)\s*(.*)/;
-                my $no_name = 0;
-
-                # if  expression for attribut inly i.e.: (:private)
-                if ( $name =~ m/^\s*:/ ) {
-                    $opt .= " $name";
-                    $name = "no_name";
-
-                    #set flag for only attr filters
-                    $no_name = 1;
-                }
-
-                #make element filter for
-                my $is_exclude = $name =~ s/^!//;
-                my $blk = $self->mk_block( $name, $opt );
-                if ($no_name) {
-                    $blk->attrs_by_name->{no_name} = 1;
-                }
-                $is_exclude ? push (@exclude_patterns, $blk) : push (@patterns, $blk)  ;
-            }
-            if (@exclude_patterns) {
-                push @expressions,
-                  new Perl6::Pod::Lib::FilterExcludePattern:: 
-                  patterns =>
-                  \@exclude_patterns;
-            }
-            if (@patterns) {
-                push @expressions,
-                  new Perl6::Pod::Parser::FilterPattern:: 
-                  patterns =>
-                  \@patterns;
-            }
-
-        }
-        my $p1 = new Perl6::Pod::Parser:: {MAIN_PARSER=>$parser,__DEFAULT_CONTEXT=>$parser->current_context};
-        my $p = create_pipe($p1, @expressions, $parser );
-        my $path = $attr->{address};
-
-        #now translate relative addr
+use Perl6::Pod::Utl;
+#use Perl6::Pod::Parser::FilterPattern;
+#use Perl6::Pod::Lib::FilterExcludePattern;
+#use Perl6::Pod::Parser::Utils qw(parse_URI );
+#use XML::ExtOn('create_pipe');
+sub new {
+    my $class = shift;
+    my $self = $class->SUPER::new(@_);
+    my $path = $self->childs->[0];
+    $path =~s/^\s*//;$path =~s/\s*$//;
+    #now translate relative addr
         if (   $path !~ /^\//
-            and my $current = $parser->current_context->custom->{src} )
+            and my $current = $self->context->custom->{src} )
         {
             my ($file, @cpath ) = reverse split( /\//, $current );
             my $cpath = join "/", reverse @cpath;
-            $path = $cpath."/".$path;
+            $path = $cpath? $cpath."/".$path : $path;
         }
-
-        $p->parse($path);
-
-    }
-    return undef;
+    
+    open (FH, "<", $path) or die  "=Include: Eror open file:$path $!";
+    my $txt = '';
+    {local $/=undef; $txt = <FH>; }
+    close FH;
+    #make tree
+#    warn "\n\nStart Parse $path ****\n";
+    my $tree = Perl6::Pod::Utl::parse_pod($txt, default_pod=>1) or die "Can't parse $path";
+    $self->childs($tree);
+    #save PATH
+    $self->{PATH} = $path;
+    $self;
 }
 
 sub to_xhtml {
-    my ( $self, $parser, @in ) = @_;
-    my $attr = $self->attrs_by_name();
-    return \@in;
+    my ( $self, $to ) = @_;
 }
 
 sub to_docbook {
-    my ( $self, $parser, @in ) = @_;
-    my $attr = $self->attrs_by_name();
-    return \@in;
+    my ( $self, $to ) = @_;
+    my $old = $to->context->custom->{src};
+    $to->context->custom->{src} = $self->{PATH};
+    $to->visit_childs($self);
+    $to->context->custom->{src} = $old;
+
 }
 1;
 

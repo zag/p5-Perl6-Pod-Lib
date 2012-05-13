@@ -1,7 +1,4 @@
 package Perl6::Pod::Lib;
-
-#$Id$
-
 =pod
 
 =head1 NAME
@@ -41,14 +38,23 @@ Insert image
 =back
 
 =cut
+use Perl6::Pod::Lib::Image;
+use Perl6::Pod::Lib::Include;
 
-$Perl6::Pod::Lib::VERSION = '0.07';
+$Perl6::Pod::Lib::VERSION = '0.10';
 our $PERL6POD = <<POD;
 =begin pod
 =use Perl6::Pod::Lib::Image
 =use Perl6::Pod::Lib::Include
 =end pod
 POD
+
+#package variable for map blocks and classes
+
+our $POD6USE = {
+'Image'=>'Perl6::Pod::Lib::Image',
+'Include'=>'Perl6::Pod::Lib::Include'
+};
 
 1;
 __END__
