@@ -1,7 +1,5 @@
 package Perl6::Pod::Lib::Image;
 
-#$Id$
-
 =pod
 
 =head1 NAME
@@ -21,9 +19,6 @@ The B<=Image> block is used for include image link.
 For definition of the target file are used a URI:
 
     =Image t/image.jpg
-
-For inclusion of certain parts of the documents add the blockname and (or) attributes after the main link. For example:
-
     =Image file:../test.jpg
     =Image http://example.com/img.jpg
 
@@ -41,83 +36,102 @@ For set title of image add attribute B<:title> or define in Pod Link format:
 
 use warnings;
 use strict;
-use Data::Dumper;
-use Test::More;
 use Perl6::Pod::Block;
 use base 'Perl6::Pod::Block';
-use Perl6::Pod::Parser::Utils qw(parse_URI );
-use XML::ExtOn('create_pipe');
 
-sub on_para {
-    my ( $self, $parser, $txt ) = @_;
-
+sub new {
+    my $class = shift;
+    my $self  = $class->SUPER::new(@_);
     #get only for one image
-    my @lines = split( /[\n]/m, $txt );
-    $txt = shift(@lines) || return;
-    my $attr = $self->attrs_by_name;
-    %{$attr} = %{ parse_URI($txt) };
-    $txt;
-}
+    my @lines = split( /[\n]/m, $self->childs->[0] );
+    my $src = shift(@lines) || return;
 
-#<img src="boat.gif" alt="Big Boat" />
-sub to_xhtml {
-    my ( $self, $parser, $txt ) = @_;
-    my $lattr = $self->attrs_by_name;
-    my $title = $lattr->{name} || $self->get_attr->{title};
-    my $src =
-        $lattr->{is_external}
-      ? $lattr->{scheme} . "://" . $lattr->{address}
-      : $self->_transalated_path( $parser,$lattr->{address});
-    my $img = $parser->mk_element('img');
-    %{ $img->attrs_by_name } = (
-        src   => $src,
-        alt   => $title,
-        title => $title
-    );
-    return $img;
+    my $title = $self->get_attr()->{title};
+    if ($src =~ /\|/) {
+        ($title, $src) = split( /\s*\|\s*/, $src);
+    }
+    $self->{SRC} = $src;
+    $self->{TITLE} = $title;
+    $self;
 }
 
 sub _transalated_path {
     my $self   = shift;
-    my $parser = shift;
+    my $renderer = shift;
     my $path   = shift;
 
     #now translate relative addr
     if ( $path !~ /^\//
-        and my $current = $parser->current_context->custom->{src} )
+        and my $current = $renderer->context->custom->{src} )
     {
         my ( $file, @cpath ) = reverse split( /\//, $current );
         my $cpath = join "/", reverse @cpath;
-        $path = $cpath . "/" . $path;
+        $path = $cpath ? $cpath . "/" . $path : $path;
     }
     return $path;
 }
 
+=head2 to_xhml
+
+  <img src="boat.gif" alt="Big Boat" title="Big Boat"/>
+
+=cut
+
+sub to_xhtml {
+    my ( $self, $to ) = @_;
+    my $src = $self->{SRC};
+    #local file ?
+    if ( $src !~/http/ ) {
+        $src =  $self->_transalated_path( $to, $self->{SRC} );
+    }
+    my $title = $self->{TITLE} ||'';
+    $to->w->raw(qq%<img src="$src" alt="$title" title="$title" />%);
+}
+
+=head2 to_docbook
+
+    <mediaobject>
+        <imageobject>
+            <imagedata align='center' 
+                        caption='test' 
+                        format='PNG' 
+                        valign='bottom' 
+                        scalefit='1' 
+                        fileref='t/data/P_test1.png' />
+        </imageobject>
+        <caption>test</caption>
+     </mediaobject>
+
+=cut
 sub to_docbook {
-    my ( $self, $parser, $txt ) = @_;
-    my $lattr      = $self->attrs_by_name;
-    my $title      = $lattr->{name} || $self->get_attr->{title};
-    my $image_data = $self->mk_element('imagedata');
-    warn "Only images from local filesystem supported" if $lattr->{is_external};
-    my $src = $self->_transalated_path($parser,$lattr->{address});
+    my ( $self, $to ) = @_;
+    my $src = $self->{SRC};
+    #local file ?
+    if ( $src !~/http/ ) {
+        $src =  $self->_transalated_path( $to, $self->{SRC} );
+    } else {
+        warn "Only images from local filesystem supported" ;
+    }
     my $ext = "JPG";
     if ( $src =~ /\.(\w+)$/ ) {
         $ext = uc($1);
     }
-    %{ $image_data->attrs_by_name } = (
-        align    => 'center',
-        valign   => "bottom",
-        scalefit => 1,
-        fileref  => $src,
-        format   => $ext,
-        caption  => $title
 
-    );
-    my $container = $self->mk_element('mediaobject');
-    my $caption =
-      $self->mk_element('caption')
-      ->add_content( $parser->mk_characters($title) );
-    return $container->add_content(
-        $self->mk_element('imageobject')->add_content($image_data), $caption );
+    my $w = $to->w;
+    my $title = $self->{TITLE} || '';
+    $w->raw(<<"T");
+    <mediaobject>
+        <imageobject>
+            <imagedata align='center' 
+                        caption='$title' 
+                        format='$ext' 
+                        valign='bottom' 
+                        scalefit='1' 
+                        fileref='$src' />
+        </imageobject>
+        
+T
+    $w->raw('<caption>')->print($title)->raw('</caption>');
+    $w->raw('</mediaobject>');
 }
 1;

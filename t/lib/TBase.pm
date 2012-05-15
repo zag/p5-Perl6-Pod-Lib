@@ -15,12 +15,57 @@ use Test::More;
 use Test::Class;
 use Perl6::Pod::Test;
 use base qw( Test::Class Perl6::Pod::Test );
-use Perl6::Pod::To::Mem;
-use Perl6::Pod::To::XML;
-use Perl6::Pod::To::DocBook;
-use Perl6::Pod::To::XHTML;
 use XML::Flow;
-use XML::ExtOn ('create_pipe');
+
+sub parse_to_test {
+    my $t = shift;
+    my ($o, $renderer ) = $t->SUPER::parse_to_test(@_, no_parse=>1);
+    #install MAP
+    while (my ($k, $v) = each %{( NAME_BLOCKS )}) {
+        $renderer->context->use->{$k} = $v;
+    }
+    $renderer->parse( \$_[0], default_pod=>1 );
+    return  $renderer 
+}
+
+sub parse_to_xhtml {
+    my $t = shift;
+    my ( $text, %args ) = @_;
+    my $out    = '';
+    open( my $fd, ">", \$out );
+    my $renderer = new Perl6::Pod::To::XHTML::
+      writer  => new Perl6::Pod::Writer( out => $fd, escape=>'xml' ),
+      out_put => \$out,
+      doctype => 'xhtml',
+      header => 0;
+    #install MAP
+    while (my ($k, $v) = each %{( NAME_BLOCKS )}) {
+        $renderer->context->use->{$k} = $v;
+    }
+    $renderer->parse( \$text, default_pod=>1 );
+    return wantarray ? (  $out, $renderer  ) : $out;
+
+}
+
+sub parse_to_docbook {
+    my $t = shift;
+    my ( $text, %args ) = @_;
+    my $out    = '';
+    open( my $fd, ">", \$out );
+    my $renderer = new Perl6::Pod::To::DocBook::
+      writer  => new Perl6::Pod::Writer( out => $fd, escape=>'xml' ),
+      out_put => \$out,
+      doctype => 'chapter',
+      header => 0;
+    #install MAP
+    while (my ($k, $v) = each %{( NAME_BLOCKS )}) {
+        $renderer->context->use->{$k} = $v;
+    }
+    $renderer->parse( \$text, default_pod=>1 );
+    return wantarray ? (  $out, $renderer  ) : $out;
+
+}
+
 
 sub testing_class {
     my $test = shift;

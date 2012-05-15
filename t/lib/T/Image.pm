@@ -13,17 +13,22 @@ use Data::Dumper;
 use Perl6::Pod::Lib::Include;
 use base 'TBase';
 
-sub p01_test_Image : Test {
+sub p01_test_Image : Test(4) {
     my $t = shift;
-    my $x = $t->parse_to_xml( <<T, );
+    my $x = $t->parse_to_test( <<T, );
 =begin pod
+=Image Title | t/data/P_test1.jpg
 =for Image :title('Test title')
-Title erer er e er |t/data/P_test1.jpg
+t/data/P_test1.jpg
+
 =end pod
 T
-    $t->is_deeply_xml( $x,
-q#<pod pod:type='block' xmlns:pod='http://perlcabal.org/syn/S26.html'><Image pod:section='' pod:type='block' pod:scheme='file' pod:is_external='' pod:name='Title erer er e er' title='Test title' pod:address='t/data/P_test1.jpg'>Title erer er e er |t/data/P_test1.jpg</Image></pod>#
-    );
+    my $i1 = $x->{Image}->[0];
+    is $i1->{SRC}, 't/data/P_test1.jpg', 'image src';
+    is $i1->{TITLE}, 'Title', 'check title';
+    my $i2 = $x->{Image}->[0];
+    is $i2->{SRC}, 't/data/P_test1.jpg', 'image src';
+    is $i2->{TITLE}, 'Title', 'check title';
 }
 
 sub p02_test_xhtml : Test {
@@ -46,8 +51,6 @@ sub p03_test_docbook : Test {
 t/data/P_test1.png
 =end pod
 T
-
-    #    diag $x; exit;
     $t->is_deeply_xml( $x,
 q#<chapter><mediaobject><imageobject><imagedata align='center' caption='test' format='PNG' valign='bottom' scalefit='1' fileref='t/data/P_test1.png' /></imageobject><caption>test</caption></mediaobject></chapter>#
     );

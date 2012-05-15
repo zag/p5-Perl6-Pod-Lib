@@ -1,6 +1,7 @@
 Revision history for Perl extension Perl6::Pod::Lib.
 TODO:
-
+0.10 15 May 2011
+    + update to Perl6::Pod 0.51 api
 0.07 4 Nov 2011
     +Typo and grammar fixes in the docs.( Michael G. Schwern ) 
 0.06 14.06.2011

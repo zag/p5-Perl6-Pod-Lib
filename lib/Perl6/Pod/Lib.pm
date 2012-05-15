@@ -9,14 +9,12 @@ Perl6::Pod::Lib - set of extensions for Perl6::Pod
 
 
     =begin pod
-    =use Perl6::Pod::Lib
     =Image src/test.jpg
     =end pod
 
 
     =begin pod
-    =use Perl6::Pod::Lib::Include
-    =Include http://example.com/api.pod(head1 :public)
+    =Include api.pod
     =end pod
 
     pod6xhtml -M Perl6::Pod::Lib somefile.pod  > somefile.xhtml
@@ -72,10 +70,10 @@ Zahatski Aliaksandr, <zag@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2010-2011 by Zahatski Aliaksandr
+Copyright (C) 2010-2012 by Zahatski Aliaksandr
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.8 or,
+it under the same terms as Perl itself, either Perl version 5.10 or,
 at your option, any later version of Perl 5 you may have available.
 
 =cut
