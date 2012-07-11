@@ -25,6 +25,7 @@ use strict;
 use Perl6::Pod::Block;
 use base 'Perl6::Pod::Block';
 use Perl6::Pod::Utl;
+use open ':utf8';
 
 sub new {
     my $class = shift;
