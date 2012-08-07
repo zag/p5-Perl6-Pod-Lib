@@ -47,7 +47,7 @@ sub new {
     my $txt = '';
     { local $/ = undef; $txt = <FH>; }
     close FH;
-    #warn "\n\n Start $path **\n";
+    
     #make tree
     my $tree = Perl6::Pod::Utl::parse_pod( $txt, default_pod => 1 )
       or die "Can't parse $path";
