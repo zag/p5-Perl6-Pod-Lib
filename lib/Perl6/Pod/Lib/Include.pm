@@ -74,6 +74,15 @@ sub to_docbook {
     $to->context->custom->{src} = $old;
 
 }
+sub to_latex {
+    my ( $self, $to ) = @_;
+    my $old = $to->context->custom->{src};
+    $to->context->custom->{src} = $self->{PATH};
+    $to->visit_childs($self);
+    $to->context->custom->{src} = $old;
+
+}
+
 1;
 
 __END__

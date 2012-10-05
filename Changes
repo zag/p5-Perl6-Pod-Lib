@@ -1,5 +1,6 @@
 Revision history for Perl extension Perl6::Pod::Lib.
 TODO:
+    + add latex format
 0.11 11 Jul 2012
     + fix open ( use utf8 )
 0.10 15 May 2011
