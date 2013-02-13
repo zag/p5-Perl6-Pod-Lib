@@ -52,12 +52,12 @@ my $t = shift;
 T
     $t->is_deeply_xml(
         $x,
-        q#<chapter><section><title>Test
+q#<chapter><section><title>Test
 </title></section><section><title>Test1 This is content
 </title><section><title>test level2
 </title><para>para1
 </para><para>This is a secure hole !
-</para></section><title>test
+</para></section></section><section><title>test
 </title><para>This is a public gate..
 </para></section></chapter>#
     );

@@ -39,7 +39,7 @@ Insert image
 use Perl6::Pod::Lib::Image;
 use Perl6::Pod::Lib::Include;
 
-$Perl6::Pod::Lib::VERSION = '0.11';
+$Perl6::Pod::Lib::VERSION = '0.12';
 our $PERL6POD = <<POD;
 =begin pod
 =use Perl6::Pod::Lib::Image
