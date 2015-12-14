@@ -39,7 +39,7 @@ Insert image
 use Perl6::Pod::Lib::Image;
 use Perl6::Pod::Lib::Include;
 
-$Perl6::Pod::Lib::VERSION = '0.12';
+$Perl6::Pod::Lib::VERSION = '0.13';
 our $PERL6POD = <<POD;
 =begin pod
 =use Perl6::Pod::Lib::Image
@@ -70,7 +70,7 @@ Zahatski Aliaksandr, <zag@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2010-2012 by Zahatski Aliaksandr
+Copyright (C) 2010-2015 by Zahatski Aliaksandr
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.10 or,

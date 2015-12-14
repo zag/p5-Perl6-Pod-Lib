@@ -4,7 +4,8 @@ Module::Build->new
     ( module_name => 'Perl6::Pod::Lib',
     license => 'perl',
    prereq => {
-	'Perl6::Pod'=>'0.59',
+	'Perl6::Pod'=>'0.71',
+	'Test::Class' => 0
 	     },
     script_files=>[qw!
     !],

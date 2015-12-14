@@ -38,6 +38,7 @@ use warnings;
 use strict;
 use Perl6::Pod::Block;
 use base 'Perl6::Pod::Block';
+our $VERSION = '0.01';
 
 sub new {
     my $class = shift;
